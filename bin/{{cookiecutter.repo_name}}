@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# FIXME : dire que c'est l'application a lancer avec bottle.
+# Mettre un exemple de ligne de commande
+
+import sys
+import os
+
+try:
+    import {{ cookiecutter.repo_name }}
+except ImportError:
+    path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.append(path)
+
+from {{ cookiecutter.repo_name }} import main
+
+if __name__ == '__main__':
+    rc = main(sys.argv)
+    if rc is not None:
+        sys.exit(rc)
