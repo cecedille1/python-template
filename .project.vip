@@ -1,5 +1,5 @@
 [Vim Project]
-Name={{ cookiecutter.repo_name }}
+Name={{ cookiecutter.project_name }}
 
 [In]
 set wildignore+=venv-*,docs/_build
