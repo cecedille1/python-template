@@ -5,16 +5,25 @@ import os
 import sys
 
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 readme = open('README.rst').read()
 
+
+def find_version(filename):
+    filepath = os.path.join(os.path.dirname(__file__), filename)
+    with open(filepath) as init:
+        for line in init:
+            if line.startswith('__version__'):
+                x, version = line.split('=', 1)
+                return version.strip().strip('\'"')
+        else:
+            raise ValueError('Cannot find the version in {0}'.format(filename))
+
+
 setup(
     name='{{ cookiecutter.repo_name }}',
-    version='{{ cookiecutter.version }}',
+    version=find_version('{{ cookiecutter.repo_name }}/__init__.py'),
     description='{{ cookiecutter.project_short_description }}',
     long_description=readme,
     author='{{ cookiecutter.full_name }}',
