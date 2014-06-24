@@ -21,7 +21,27 @@ def find_version(filename):
             raise ValueError('Cannot find the version in {0}'.format(filename))
 
 
-setup(
+def parse_requirements(requirements_txt):
+    requirements = []
+    try:
+        with open(requirements_txt, 'rb') as f:
+            for line in f:
+                line = line.strip()
+                if line.startswith('#') or not line:
+                    continue
+                if line.startswith('-'):
+                    raise ValueError('Unexpected command {0} in {1}'.format(
+                        line,
+                        requirements_txt,
+                    ))
+
+                requirements.append(line)
+        return requirements
+    except IOError:
+        return []
+
+
+build_info = dict(
     name='{{ cookiecutter.repo_name }}',
     version=find_version('{{ cookiecutter.repo_name }}/__init__.py'),
     description='{{ cookiecutter.project_short_description }}',
@@ -35,11 +55,13 @@ setup(
         '{{ cookiecutter.repo_name }}': '{{ cookiecutter.repo_name }}'
     },
     include_package_data=True,
-    install_requires=[
-    ],
+    install_requires=parse_requirements('requirements.txt'),
     zip_safe=False,
     keywords='{{ cookiecutter.repo_name }}',
     classifiers=[
     ],
     test_suite='tests',
 )
+
+if __name__ == '__main__':
+    setup(**build_info)
