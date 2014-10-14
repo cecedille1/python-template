@@ -13,9 +13,7 @@ except ImportError:
     path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
     sys.path.append(path)
 
-from {{ cookiecutter.repo_name }} import main
+from {{ cookiecutter.repo_name }}.__main__ import main
 
 if __name__ == '__main__':
-    rc = main(sys.argv)
-    if rc is not None:
-        sys.exit(rc)
+    main()
