@@ -7,7 +7,7 @@ import sys
 
 from setuptools import setup
 
-readme = open('README.rst').read()
+readme = open('README.md').read()
 
 
 def find_version(filename):
