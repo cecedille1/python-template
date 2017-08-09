@@ -3,13 +3,41 @@
 import os
 import sys
 
+from paver.easy import task, consume_args, needs
 
-DISABLED_LIBS = []
+
+@task
+def django_setup(pavement_file):
+    sys.path.append(os.path.dirname(pavement_file))
+    os.environ['DJANGO_SETTINGS_MODULE'] = '{{ cookiecutter.repo_name }}.tests.settings'
+    from django import setup
+    setup()
 
 
-def init(env):
-    # Initialize the paver environment
-    pass
+@task
+@consume_args
+@needs('django_setup')
+def django(args):
+    from django.core.management import call_command
+    call_command(*args)
+
+
+@task
+@needs('django_setup')
+def po():
+    ignore_list = [
+        'setup.py',
+        'pavement.py',
+        'build/*',
+        'requirements.txt',
+        'docs/*',
+        'requirements.d/*',
+    ]
+    command = ['makemessages', '-l', 'fr']
+    for i in ignore_list:
+        command.extend(['-i', i])
+    from django.core.management import call_command
+    call_command(*command)
 
 
 def find_version(filename):
@@ -59,24 +87,17 @@ def setup_options():
         long_description=readme,
         author='{{ cookiecutter.full_name }}',
         author_email='{{ cookiecutter.email }}',
-        packages=[
-            packages=setuptools.find_packages(
-                include=[
-                    '{{ cookiecutter.repo_name }}',
-                    '{{ cookiecutter.repo_name }}.*',
-                ],
-            ),
-        ],
+        packages=setuptools.find_packages(
+            exclude=[
+                '*.tests',
+                '*.tests.*',
+            ]
+        ),
         include_package_data=True,
-        install_requires=[
-        ],
+        install_requires=parse_requirements('requirements.txt'),
         zip_safe=False,
-)
+    )
 
 
-try:
-    import sett
-    with open(ROOT.joinpath('localpavement.py'), 'r') as localpavement:
-        exec(localpavement.read(), locals(), globals())
-except (OSError, ImportError) as e:
-    pass
+if os.path.realpath(sys.argv[0]) == os.path.realpath(os.path.join(os.path.dirname(__file__), 'setup.py')):
+    setup_options()

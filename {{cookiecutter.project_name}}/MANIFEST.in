@@ -2,4 +2,10 @@ include README.md
 include setup.py
 include requirements.txt
 
+recursive-include {{ cookiecutter.repo_name }}/locale/ *
+recursive-include {{ cookiecutter.repo_name }}/templates/ *
+recursive-include {{ cookiecutter.repo_name }}/fixtures/ *
+recursive-exclude {{ cookiecutter.repo_name }}/fixtures/chloroform/tests/ *
+
 exclude pavement.py
+global-exclude *.orig *.pyc *.log *.swp local_settings.py

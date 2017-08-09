@@ -1,0 +1,4 @@
+pytest
+pytest-django
+pyyaml
+pytest-pythonpath
